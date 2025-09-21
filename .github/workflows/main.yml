@@ -1,0 +1,32 @@
+name: Build cs2-dumper
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: 1.74.0
+
+    - name: Cache Rust dependencies
+      uses: Swatinem/rust-cache@v2
+
+    - name: Build release binary
+      run: cargo build --release --bin cs2-dumper
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: cs2-dumper-windows
+        path: target/release/cs2-dumper.exe
